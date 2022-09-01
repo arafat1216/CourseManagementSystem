@@ -20,10 +20,12 @@ namespace CourseManagementSystem.Controllers
         }
 
         // GET: Enrollments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var applicationDbContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student);
-            return View(await applicationDbContext.ToListAsync());
+            var enrollments = _context.Enrollments.Include(e => e.Course).Include(e => e.Student).AsQueryable();
+            //return View(await applicationDbContext.ToListAsync());
+            int pageSize = 3;
+            return View(await PaginatedList<Enrollment>.CreateAsync(enrollments.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Enrollments/Details/5

@@ -55,7 +55,6 @@ namespace CourseManagementSystem.Controllers
             }
             int pageSize = 3;
             return View(await PaginatedList<Student>.CreateAsync(students.AsNoTracking(),pageNumber ?? 1,pageSize));
-            //return View(await students.AsNoTracking().ToListAsync());
         }
 
         // GET: Students/Details/5

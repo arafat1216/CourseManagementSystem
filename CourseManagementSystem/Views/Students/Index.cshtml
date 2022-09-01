@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<CourseManagementSystem.Models.Student>*@
-@model PaginatedList<CourseManagementSystem.Models.Student>
+﻿@model PaginatedList<CourseManagementSystem.Models.Student>
 
 @{
     ViewData["Title"] = "Index";
@@ -24,8 +23,8 @@
 
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" 
-                asp-route-currentFilter ="@ViewData["CurrentFilter"]" class="text-dark text-decoration-none">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="text-dark text-decoration-none">
                     Enrollment Date
                     <i class="fa-sharp fa-solid fa-angle-down"></i>
                 </a>
@@ -63,17 +62,28 @@
     var prevDisabled = !Model.hasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.hasNextPage ? "disabled" : "";
 }
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-outline-dark @prevDisabled">
-    <i class="fas fa-angle-double-left"></i> Previous 
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-outline-dark @nextDisabled">
-    Next <i class="fas fa-angle-double-right"></i>
-</a>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-outline-dark @prevDisabled">
+            <i class="fas fa-angle-double-left"></i> Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-outline-dark @nextDisabled">
+            Next <i class="fas fa-angle-double-right"></i>
+        </a>
+    </div>
+    <div class="col-md-6 text-end">
+        <p>
+            @Model.PageIndex / @Model.TotalPages
+        </p>
+    </div>
+</div>

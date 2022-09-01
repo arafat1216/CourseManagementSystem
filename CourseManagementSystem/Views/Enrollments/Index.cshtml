@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CourseManagementSystem.Models.Enrollment>
+﻿@model PaginatedList<CourseManagementSystem.Models.Enrollment>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -13,35 +14,61 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Grade)
+                Grade
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student)
+                Student
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Course)
+                Course
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Grade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.StudentId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EnrollmentId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Grade)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.StudentId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.CourseId)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.EnrollmentId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.hasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.hasNextPage ? "disabled" : "";
+}
+<div class="row">
+    <div class="col-md-6">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="btn btn-outline-dark @prevDisabled">
+            <i class="fas fa-angle-double-left"></i> Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="btn btn-outline-dark @nextDisabled">
+            Next <i class="fas fa-angle-double-right"></i>
+        </a>
+    </div>
+    <div class="col-md-6 text-end">
+        <p>
+            @Model.PageIndex / @Model.TotalPages
+        </p>
+    </div>
+</div>
+
+
