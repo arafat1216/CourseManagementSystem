@@ -20,10 +20,29 @@ namespace CourseManagementSystem.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var applicationDbContext = _context.Students.Include(s => s.Department);
-            return View(await applicationDbContext.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+         
+
+            var students = _context.Students.Include(s => s.Department).AsQueryable();
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.StudentName);
+                    break;
+                case "Date":
+                    students = students.OrderBy(s => s.EnrollmentDate);
+                    break;
+                case "date_desc":
+                    students = students.OrderByDescending(s => s.EnrollmentDate);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.StudentName);
+                    break;
+            }
+            return View(await students.AsNoTracking().ToListAsync());
         }
 
         // GET: Students/Details/5
@@ -36,8 +55,8 @@ namespace CourseManagementSystem.Controllers
 
             var student = await _context.Students
                 .Include(s => s.Department)
-                .Include(e=>e.Enrollments)
-                .ThenInclude(c=>c.Course)
+                .Include(e => e.Enrollments)
+                .ThenInclude(c => c.Course)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.StudentId == id);
             if (student == null)
@@ -158,14 +177,14 @@ namespace CourseManagementSystem.Controllers
             {
                 _context.Students.Remove(student);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StudentExists(int id)
         {
-          return (_context.Students?.Any(e => e.StudentId == id)).GetValueOrDefault();
+            return (_context.Students?.Any(e => e.StudentId == id)).GetValueOrDefault();
         }
     }
 }
