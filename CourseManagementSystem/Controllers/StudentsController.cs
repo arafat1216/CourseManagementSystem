@@ -20,13 +20,18 @@ namespace CourseManagementSystem.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchText)
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-         
+            ViewData["CurrentFilter"]= searchText;
 
             var students = _context.Students.Include(s => s.Department).AsQueryable();
+
+            if(!String.IsNullOrEmpty(searchText))
+            {
+                students = students.Where(s => s.StudentName.Contains(searchText));
+            }
             switch (sortOrder)
             {
                 case "name_desc":
