@@ -20,17 +20,23 @@ namespace CourseManagementSystem.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index(string sortOrder, string searchText)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchText, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewData["CurrentFilter"]= searchText;
+            ViewData["CurrentFilter"] = searchText;
 
             var students = _context.Students.Include(s => s.Department).AsQueryable();
 
-            if(!String.IsNullOrEmpty(searchText))
+            if (!String.IsNullOrEmpty(searchText))
             {
                 students = students.Where(s => s.StudentName.Contains(searchText));
+                pageNumber = 1;
+            }
+            else
+            {
+                searchText = currentFilter;
             }
             switch (sortOrder)
             {
@@ -47,7 +53,9 @@ namespace CourseManagementSystem.Controllers
                     students = students.OrderBy(s => s.StudentName);
                     break;
             }
-            return View(await students.AsNoTracking().ToListAsync());
+            int pageSize = 3;
+            return View(await PaginatedList<Student>.CreateAsync(students.AsNoTracking(),pageNumber ?? 1,pageSize));
+            //return View(await students.AsNoTracking().ToListAsync());
         }
 
         // GET: Students/Details/5
